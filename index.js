@@ -1,4 +1,8 @@
-require('dotenv').config();
+const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local'), override: true });
+dotenv.config();
 
 const app = require('./src/app');
 const db = require('./src/models');
