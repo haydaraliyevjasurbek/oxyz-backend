@@ -60,7 +60,7 @@ app.use(express.json({ limit: '2mb' }));
 // html formalarni xabarlarni parse qilamiz
 app.use(express.urlencoded({ extended: true }));
 // base url: quick sanity endpoint
-app.get('/', (req, res) => res.json({ ok: true, service: 'oxyz-backend' }));
+app.get('/', (req, res) => res.redirect('https://oxyz-frontend.netlify.app'));
 // bu yerda server holatini tekshirish uchun endpoint
 app.get('/health', (req, res) => res.json({ ok: true }));
 // auth router
