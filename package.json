@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "node -e \"console.log('no build step for backend')\"",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "sequelize": "sequelize"
