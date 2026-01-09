@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 const servicesRouter = require('./routes/service.routes');
 const processStepsRouter = require('./routes/processStep.routes');
@@ -42,6 +43,17 @@ const {
 } = require('./controllers/quoteRequest.controller');
 
 const app = express();
+
+const corsOrigin = process.env.CORS_ORIGIN;
+const allowedOrigins = corsOrigin
+  ? corsOrigin.split(',').map((o) => o.trim()).filter(Boolean)
+  : null;
+
+app.use(cors({
+  origin: allowedOrigins ?? true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // http req body limit beramiz
 app.use(express.json({ limit: '2mb' }));
