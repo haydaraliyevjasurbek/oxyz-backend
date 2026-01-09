@@ -10,7 +10,30 @@ function env(name, fallback) {
 
 function needsSsl() {
   const sslmode = (process.env.PGSSLMODE || '').toLowerCase();
-  return sslmode === 'require' || sslmode === 'verify-ca' || sslmode === 'verify-full';
+  if (sslmode) {
+    return sslmode === 'require' || sslmode === 'verify-ca' || sslmode === 'verify-full';
+  }
+
+  // If sslmode is specified inside DATABASE_URL (e.g. ?sslmode=require)
+  const databaseUrl = process.env.DATABASE_URL;
+  if (databaseUrl && typeof databaseUrl === 'string') {
+    try {
+      const url = new URL(databaseUrl);
+      const urlSslmode = (url.searchParams.get('sslmode') || '').toLowerCase();
+      if (urlSslmode) {
+        return urlSslmode === 'require' || urlSslmode === 'verify-ca' || urlSslmode === 'verify-full';
+      }
+    } catch {
+      // ignore invalid URL format
+    }
+  }
+
+  // Hosts like Render typically require SSL; when running in production with DATABASE_URL,
+  // default to SSL even if PGSSLMODE is not explicitly set.
+  const nodeEnv = (process.env.NODE_ENV || '').toLowerCase();
+  if (nodeEnv === 'production' && databaseUrl) return true;
+
+  return false;
 }
 
 function postgresSslOptions() {
