@@ -119,6 +119,16 @@ app.use('/quote-requests', requireAuth, quoteRequestsRouter);
 
 // Basic error handler
 app.use((err, req, res, next) => {
+// Vercel: redirect all unknown routes and root to frontend
+const frontendUrl = process.env.FRONTEND_URL || 'https://oxyz-frontend.netlify.app';
+if (process.env.VERCEL) {
+  app.get('/', (req, res) => res.redirect(308, frontendUrl));
+  app.use((req, res, next) => {
+    if (!res.headersSent) {
+      res.redirect(308, frontendUrl);
+    }
+  });
+}
   // Multer file size error
   if (err && err.code === 'LIMIT_FILE_SIZE') {
     return res.status(413).json({ message: 'Fayl juda katta (maksimal 10MB)' });
