@@ -54,9 +54,9 @@ function baseConfig(extra = {}) {
 module.exports = {
   development: baseConfig(),
   test: baseConfig({
-    database: env('PGDATABASE_TEST', 'database_test'),
+    database: env('PGDATABASE_TEST', env('PGDATABASE', 'database_test')),
   }),
   production: baseConfig({
-    database: env('PGDATABASE_PROD', 'database_production'),
+    database: env('PGDATABASE_PROD', env('PGDATABASE', 'database_production')),
   }),
 };
