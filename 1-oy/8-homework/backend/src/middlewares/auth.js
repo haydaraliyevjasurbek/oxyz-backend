@@ -12,7 +12,7 @@ function signAdminToken() {
   return jwt.sign(
     { role: 'admin' },
     getJwtSecret(),
-    { expiresIn: Number(process.env.TEKON_TIME) }
+    { expiresIn: process.env.TOKEN_TIME || '12h' }
   );
 }
 

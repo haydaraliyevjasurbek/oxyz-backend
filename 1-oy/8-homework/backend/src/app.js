@@ -61,9 +61,8 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 // base url: quick sanity endpoint
 
-app.get('/', (_req, res) => res.json({ ok: true, service: 'oxyz-backend' }));
 
-app.get('/', (req, res) => res.send('Backend ishlayapti!'));
+app.get('/', (_req, res) => res.json({ ok: true, service: 'oxyz-backend' }));
 
 // bu yerda server holatini tekshirish uchun endpoint
 app.get('/health', (req, res) => res.json({ ok: true }));
@@ -71,33 +70,28 @@ app.get('/health', (req, res) => res.json({ ok: true }));
 app.use('/auth', authRouter);
 
 
-// PUBLIC API (faqat GET va kerakli POST)
-// Service
-app.get('/api/services', listServices);
-app.get('/api/services/:id', getService);
-app.get('/api/services/:id/image', getServiceImage);
-// Process Steps
-app.get('/api/process-steps', listProcessSteps);
-app.get('/api/process-steps/:id', getProcessStep);
-// Stats
-app.get('/api/stats', listStats);
-app.get('/api/stats/:id', getStat);
-app.get('/api/stats/:id/icon', getStatIcon);
-// News
-app.get('/api/news', listNews);
-app.get('/api/news/:id', getNews);
-app.get('/api/news/:id/image', getNewsImage);
-// Faqs
-app.get('/api/faqs', listFaqs);
-app.get('/api/faqs/:id', getFaq);
-// Contacts
-app.get('/api/contacts', listContacts);
-app.get('/api/contacts/:id', getContact);
-// Quote Forms
-app.get('/api/quote-forms', listQuoteForms);
-app.get('/api/quote-forms/:id', getQuoteForm);
-// Quote Requests (faqat create)
-app.post('/api/quote-requests', createQuoteRequestPublic);
+
+// PUBLIC API (faqat /api orqali)
+const publicApi = express.Router();
+publicApi.get('/services', listServices);
+publicApi.get('/services/:id', getService);
+publicApi.get('/services/:id/image', getServiceImage);
+publicApi.get('/process-steps', listProcessSteps);
+publicApi.get('/process-steps/:id', getProcessStep);
+publicApi.get('/stats', listStats);
+publicApi.get('/stats/:id', getStat);
+publicApi.get('/stats/:id/icon', getStatIcon);
+publicApi.get('/news', listNews);
+publicApi.get('/news/:id', getNews);
+publicApi.get('/news/:id/image', getNewsImage);
+publicApi.get('/faqs', listFaqs);
+publicApi.get('/faqs/:id', getFaq);
+publicApi.get('/contacts', listContacts);
+publicApi.get('/contacts/:id', getContact);
+publicApi.get('/quote-forms', listQuoteForms);
+publicApi.get('/quote-forms/:id', getQuoteForm);
+publicApi.post('/quote-requests', createQuoteRequestPublic);
+app.use('/api', publicApi);
 
 // ADMIN (PRIVATE) API (CRUD, requireAuth)
 app.use('/admin/services', requireAuth, servicesRouter);
