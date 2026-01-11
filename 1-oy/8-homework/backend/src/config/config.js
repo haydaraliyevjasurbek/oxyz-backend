@@ -2,7 +2,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local'), override: true });
-dotenv.config();
+dotenv.config({ quiet: true });
 
 function env(name, fallback) {
   return process.env[name] ?? fallback;
@@ -83,3 +83,8 @@ module.exports = {
     database: env('PGDATABASE_PROD', env('PGDATABASE', 'database_production')),
   }),
 };
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
