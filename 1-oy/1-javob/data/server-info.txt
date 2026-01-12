@@ -1,3 +1,0 @@
-Platform: win32
-Free Memory: 1.47
-CPU Cores: 16
