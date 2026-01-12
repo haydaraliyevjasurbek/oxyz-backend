@@ -11,7 +11,11 @@ const quoteFormsRouter = require('./routes/quoteForm.routes');
 const quoteRequestsRouter = require('./routes/quoteRequest.routes');
 const authRouter = require('./routes/auth.routes');
 const { requireAuth } = require('./middlewares/auth');
-const { getServiceImage } = require('./controllers/service.controller');
+const {
+  listServices,
+  getService,
+  getServiceImage,
+} = require('./controllers/service.controller');
 const {
   listProcessSteps,
   getProcessStep,
