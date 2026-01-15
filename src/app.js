@@ -105,29 +105,30 @@ app.use('/admin/quote-forms', requireAuth, quoteFormsRouter);
 app.use('/admin/quote-requests', requireAuth, quoteRequestsRouter);
 
 // Basic error handler
+
+// 404 handler: Vercel uchun frontendga faqat GET not found so'rovlarida redirect
+app.use((req, res, next) => {
+  const frontendUrl = process.env.FRONTEND_URL || 'https://oxyz-frontend.netlify.app';
+  if (process.env.VERCEL && req.method === 'GET') {
+    return res.redirect(308, frontendUrl);
+  }
+  // Boshqa barcha not found uchun JSON qaytarish
+  res.status(404).json({ message: 'Not found' });
+});
+
+// Xatoliklar uchun universal error handler
 app.use((err, req, res, next) => {
-// Vercel: redirect all unknown routes and root to frontend
-const frontendUrl = process.env.FRONTEND_URL || 'https://oxyz-frontend.netlify.app';
-if (process.env.VERCEL) {
-  app.get('/', (req, res) => res.redirect(308, frontendUrl));
-  app.use((req, res, next) => {
-    if (!res.headersSent) {
-      res.redirect(308, frontendUrl);
-    }
-  });
-}
   // Multer file size error
   if (err && err.code === 'LIMIT_FILE_SIZE') {
     return res.status(413).json({ message: 'Fayl juda katta (maksimal 10MB)' });
   }
-
   // Multer file type error
   if (err && err.message === 'Unsupported file type') {
     return res.status(415).json({ message: 'Fayl turi qo‘llab-quvvatlanmaydi (faqat rasm)' });
   }
-
+  // Default: server error
   console.error(err);
-  return res.status(500).json({ message: 'Ichki server xatosi' });
+  res.status(500).json({ message: 'Ichki server xatosi' });
 });
 
 module.exports = app;
